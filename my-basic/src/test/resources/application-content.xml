@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd" >
+
+    <bean id="oneBean" class="bean.OneBean" >
+        <property name="name" value="a" />
+    </bean>
+
+    
+<!--aop:scoped-proxy  针对 bean scope 保持一直   用在web的场景   bean ref  scope 为 request的 bean -->
+
+    <bean id="nestBean" class="bean.NestBean" >
+        <property name="one" ref="oneBean" />
+    </bean>
+
+    <!--lazy-init 赖创建 模式-->
+    <bean id="nestBean1" class="bean.NestConstrBean" lazy-init="true">
+        <constructor-arg index="0" ref="oneBean" />
+
+    </bean>
+
+    <alias name="oneBean" alias="oneBeanA"/>
+
+    <bean id="defaultServerLocator" class="bean.DefaultServerLocator" />
+
+    <bean id="clientService" factory-bean="defaultServerLocator" factory-method="createClientService" />
+    <bean id="clientService1" factory-bean="defaultServerLocator" factory-method="createClientService" />
+
+
+    <bean id="prototypeBean" class="bean.PrototypeBean" scope="prototype" />
+
+
+
+    <bean id="singletonBean" class="bean.SingletonBean" >
+
+        <property name="prototypeBean" ref="prototypeBean" />
+        <!---
+        <lookup-method name="getPrototypeBean" bean="prototypeBean" />
+        -->
+
+    </bean>
+
+    <import resource="beans-defined.xml" />
+
+
+
+    <!-- 读取占位符文件-->
+    <context:property-placeholder location="jdbc.properties" />
+
+    <!--加载多个占位符文件-->
+    <!--<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >-->
+        <!--<property name="order" value="1" />-->
+        <!--<property name="ignoreUnresolvablePlaceholders" value="true" />-->
+        <!--<property name="locations" >-->
+            <!--<list>-->
+                <!-- -->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+
+</beans>
